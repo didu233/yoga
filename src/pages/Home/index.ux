@@ -1,0 +1,270 @@
+<template>
+  <div class="wrapper">
+    <div class="header">
+      <text class="app-title">轻瑜伽</text>
+      <text class="app-subtitle">让身心回归平静</text>
+    </div>
+    <div class="content">
+      <div class="card" onclick="goToMeditation">
+        <div class="card-icon meditation-icon">🧘</div>
+        <text class="card-title">计时冥想</text>
+        <text class="card-desc">专注当下，静心冥想</text>
+      </div>
+      <div class="card" onclick="goToPractice">
+        <div class="card-icon practice-icon">🧘‍♀️</div>
+        <text class="card-title">练习动作</text>
+        <text class="card-desc">学习标准瑜伽体式</text>
+      </div>
+      <div class="card" onclick="goToKnowledge">
+        <div class="card-icon knowledge-icon">📚</div>
+        <text class="card-title">瑜伽小知识</text>
+        <text class="card-desc">了解更多瑜伽知识</text>
+      </div>
+    </div>
+    <!-- 隐私政策弹窗 -->
+    <div class="privacy-popup-bg" if="{{isShowPrivacyPopup}}">
+      <div class="privacy-popup-box">
+        <text class="privacy-popup-title">温馨提示</text>
+        <text class="privacy-popup-content">
+          <span>欢迎使用本应用！本应用非常重视您的隐私和个人信息保护。在您使用本应用前，请认真阅读</span>
+          <text class="privacy-link" onclick="goToPrivacyPolicy('agreement')">《用户协议》</text>
+          <span>及</span>
+          <text class="privacy-link" onclick="goToPrivacyPolicy('privacy')">《隐私政策》</text>
+          <span>您同意并接受全部条款后方可开始使用本应用。</span>
+        </text>
+        <div class="privacy-popup-btn-box">
+          <text class="privacy-popup-btn-disagree" onclick="disagree">不同意</text>
+          <text class="privacy-popup-btn-agree" onclick="agree">同意并继续</text>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+
+export default {
+  private: {
+    isShowPrivacyPopup: false
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '轻瑜伽' })
+  },
+  onShow() {
+    // 检查是否已同意隐私政策
+    const that = this
+    storage.get({
+      key: 'isAgreePrivacyPolicy',
+      success: function(data) {
+        if (data === 'true') {
+          that.isShowPrivacyPopup = false
+        } else {
+          setTimeout(() => {
+            that.isShowPrivacyPopup = true
+          }, 500)
+        }
+      },
+      fail: function(data, code) {
+        // 如果获取失败，显示弹窗
+        setTimeout(() => {
+          that.isShowPrivacyPopup = true
+        }, 500)
+      }
+    })
+  },
+  goToMeditation() {
+    router.push({
+      uri: '/pages/Meditation'
+    })
+  },
+  goToPractice() {
+    router.push({
+      uri: 'pages/PracticeList'
+    })
+  },
+  goToKnowledge() {
+    router.push({
+      uri: 'pages/KnowledgeList'
+    })
+  },
+  goToPrivacyPolicy(type) {
+    router.push({
+      uri: 'pages/PrivacyPolicy',
+      params: {
+        tab: type === 'agreement' ? 'agreement' : 'privacy'
+      }
+    })
+  },
+  disagree() {
+    this.$app.exit()
+  },
+  agree() {
+    const that = this
+    storage.set({
+      key: 'isAgreePrivacyPolicy',
+      value: 'true',
+      success: function(data) {
+        console.log('隐私政策同意状态已保存')
+      },
+      fail: function(data, code) {
+        console.log('保存失败，code = ' + code)
+      }
+    })
+    this.isShowPrivacyPopup = false
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  background-color: @bg-main;
+  position: relative;
+}
+
+.header {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 40 * @size-factor 20 * @size-factor 30 * @size-factor;
+}
+
+.app-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 10 * @size-factor;
+}
+
+.app-subtitle {
+  font-size: 28px;
+  color: @grey;
+}
+
+.content {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 0 20 * @size-factor 20 * @size-factor;
+}
+
+.card {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 30 * @size-factor;
+  margin-bottom: 24 * @size-factor;
+  border: 1px solid @border-color;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  font-size: 60px;
+  margin-bottom: 16 * @size-factor;
+}
+
+.card-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 8 * @size-factor;
+}
+
+.card-desc {
+  font-size: 26px;
+  color: @grey;
+  text-align: center;
+}
+
+/* 隐私政策弹窗样式 */
+.privacy-popup-bg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.privacy-popup-box {
+  width: 600px;
+  min-height: 400px;
+  flex-direction: column;
+  align-items: center;
+  background-color: @white;
+  border-radius: 20 * @size-factor;
+  padding: 40 * @size-factor;
+}
+
+.privacy-popup-title {
+  font-size: 36px;
+  color: @black;
+  font-weight: bold;
+  margin-bottom: 30 * @size-factor;
+  text-align: center;
+}
+
+.privacy-popup-content {
+  font-size: 28px;
+  color: @grey;
+  line-height: 1.6;
+  width: 100%;
+  margin-bottom: 40 * @size-factor;
+}
+
+.privacy-link {
+  color: @brand;
+  text-decoration: underline;
+}
+
+.privacy-popup-btn-box {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20 * @size-factor;
+}
+
+.privacy-popup-btn-disagree {
+  width: 220px;
+  height: 80px;
+  border: 2px solid #979797;
+  color: #999999;
+  text-align: center;
+  border-radius: 12 * @size-factor;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.privacy-popup-btn-agree {
+  width: 220px;
+  height: 80px;
+  color: @white;
+  background-color: @brand;
+  text-align: center;
+  border-radius: 12 * @size-factor;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+</style>

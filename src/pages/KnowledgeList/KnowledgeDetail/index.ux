@@ -1,0 +1,131 @@
+<template>
+  <div class="wrapper">
+    <scroll-view class="scroll-content">
+      <div class="detail-content">
+        <div class="detail-header">
+          <text class="detail-title">{{title}}</text>
+          <text class="detail-date">{{publishDate}}</text>
+        </div>
+        <div class="detail-body">
+          <text class="detail-text">{{content}}</text>
+        </div>
+      </div>
+    </scroll-view>
+  </div>
+</template>
+
+<script>
+import knowledgeData from '../../../data/knowledge.js'
+
+export default {
+  data: {
+    id: '',
+    title: '',
+    summary: '',
+    content: '',
+    publishDate: ''
+  },
+  onInit(options) {
+    this.$page.setTitleBar({ text: '知识详情' })
+    this.loadArticleData(options)
+  },
+  onShow(options) {
+    // 每次显示时重新加载数据，确保数据正确
+    if (options && options.id) {
+      this.loadArticleData(options)
+    }
+  },
+  loadArticleData(options) {
+    // 从路由参数中获取 id
+    const id = (options && options.id) || this.id
+    
+    if (!id) {
+      return
+    }
+    
+    try {
+      const articleId = parseInt(id)
+      if (isNaN(articleId)) {
+        return
+      }
+      
+      const article = knowledgeData.find(item => item.id === articleId)
+      if (article) {
+        this.id = String(articleId)
+        this.title = article.title
+        this.summary = article.summary
+        this.content = article.content
+        this.publishDate = article.publishDate
+        this.$page.setTitleBar({ text: article.title })
+      }
+    } catch (error) {
+      console.error('加载文章详情失败:', error)
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+  background-color: @bg-main;
+}
+
+.scroll-content {
+  width: 100%;
+  flex: 1;
+}
+
+.detail-content {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 30 * @size-factor;
+  background-color: @white;
+  margin: 20 * @size-factor;
+  border-radius: 16 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.detail-header {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 30 * @size-factor;
+  padding-bottom: 20 * @size-factor;
+  border-bottom: 1px solid @border-color;
+}
+
+.detail-title {
+  font-size: 40px;
+  font-weight: bold;
+  color: @black;
+  line-height: 1.4;
+  margin-bottom: 16 * @size-factor;
+}
+
+.detail-date {
+  font-size: 24px;
+  color: @grey;
+}
+
+.detail-body {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.detail-text {
+  font-size: 28px;
+  color: @black;
+  line-height: 1.8;
+}
+</style>

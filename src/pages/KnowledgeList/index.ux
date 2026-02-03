@@ -1,0 +1,125 @@
+<template>
+  <div class="wrapper">
+    <list class="knowledge-list">
+      <list-item
+        type="knowledge"
+        for="{{(index, item) in knowledgeList}}"
+        class="knowledge-item"
+        onclick="goToDetail(item.id)"
+      >
+        <div class="knowledge-card">
+          <div class="knowledge-header">
+            <text class="knowledge-title">{{item.title}}</text>
+            <text class="knowledge-date">{{item.publishDate}}</text>
+          </div>
+          <text class="knowledge-summary">{{item.summary}}</text>
+          <div class="knowledge-footer">
+            <text class="read-more">阅读更多 →</text>
+          </div>
+        </div>
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import knowledgeData from '../../data/knowledge.js'
+
+export default {
+  data: {
+    knowledgeList: []
+  },
+  onInit() {
+    // this.$page.setTitleBar({ text: '瑜伽小知识' })
+  },
+  onShow(){
+     this.knowledgeList = knowledgeData
+  },
+  goToDetail(id) {
+    if (id) {
+      router.push({
+        uri: '/pages/KnowledgeList/KnowledgeDetail',
+        params: {
+          id: String(id)
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+  background-color: @bg-main;
+}
+
+.knowledge-list {
+  width: 100%;
+  flex: 1;
+}
+
+.knowledge-item {
+  width: 100%;
+  padding: 20 * @size-factor;
+}
+
+.knowledge-card {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 30 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.knowledge-header {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 16 * @size-factor;
+}
+
+.knowledge-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: @black;
+  flex: 1;
+  margin-right: 16 * @size-factor;
+}
+
+.knowledge-date {
+  font-size: 22px;
+  color: @grey;
+  flex-shrink: 0;
+}
+
+.knowledge-summary {
+  font-size: 26px;
+  color: @grey;
+  margin-bottom: 20 * @size-factor;
+  lines: 3;
+  text-overflow: ellipsis;
+}
+
+.knowledge-footer {
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.read-more {
+  font-size: 24px;
+  color: @brand;
+}
+</style>

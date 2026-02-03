@@ -1,0 +1,329 @@
+<template>
+  <div class="wrapper">
+    <div class="card-container">
+      <div class="tap-area left-tap-area" onclick="goToPrevious">
+        <text class="arrow-icon" if="{{currentIndex > 0}}">◀</text>
+      </div>
+      <div class="card-wrapper">
+        <div class="practice-card" if="{{currentPractice}}">
+          <div class="card-content">
+            <image class="practice-image" src="{{currentPractice.image}}" />
+            <div class="practice-info">
+              <div class="practice-header">
+                <text class="practice-name">{{currentPractice.name}}</text>
+                <text class="practice-difficulty difficulty-{{currentPractice.difficulty}}"
+                  >{{currentPractice.difficulty}}</text
+                >
+              </div>
+              <text class="practice-desc">{{currentPractice.description}}</text>
+              <div class="detail-section">
+                <text class="section-title">练习步骤</text>
+                <div class="steps-list">
+                  <div class="step-item" for="{{(stepIndex, step) in currentPractice.steps}}">
+                    <text class="step-number">{{stepIndex + 1}}</text>
+                    <text class="step-text">{{step}}</text>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-section">
+                <text class="section-title">注意事项</text>
+                <div class="tips-list">
+                  <div class="tip-item" for="{{(tipIndex, tip) in currentPractice.tips}}">
+                    <text class="tip-icon">💡</text>
+                    <text class="tip-text">{{tip}}</text>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-indicator">
+            <text class="page-text">{{currentIndex + 1}} / {{practices.length}}</text>
+          </div>
+        </div>
+      </div>
+      <div class="tap-area right-tap-area" onclick="goToNext">
+        <text class="arrow-icon" if="{{currentIndex < practices.length - 1}}">▶</text>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import practicesData from '../../data/practices.js'
+
+export default {
+  private: {
+    practices: [],
+    currentIndex: 0,
+    currentPractice: null
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '练习动作' })
+    this.practices = practicesData
+    this.updateCurrentPractice()
+  },
+  updateCurrentPractice() {
+    if (this.practices && this.practices.length > 0) {
+      this.currentPractice = this.practices[this.currentIndex]
+    } else {
+      this.currentPractice = null
+    }
+  },
+  goToPrevious() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--
+      this.updateCurrentPractice()
+    }
+  },
+  goToNext() {
+    if (this.currentIndex < this.practices.length - 1) {
+      this.currentIndex++
+      this.updateCurrentPractice()
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+  background-color: @bg-main;
+}
+
+.card-container {
+  width: 100%;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.tap-area {
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  align-self: stretch;
+}
+
+.arrow-icon {
+  font-size: 60px;
+  color: @grey;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.card-wrapper {
+  flex: 8;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.practice-card {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: @white;
+}
+
+.card-content {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  flex: 1;
+  padding: 40 * @size-factor;
+  overflow: scroll;
+}
+
+.practice-image {
+  width: 100%;
+  height: 500 * @size-factor;
+  border-radius: 20 * @size-factor;
+  background-color: @bg-main;
+  margin-bottom: 30 * @size-factor;
+}
+
+.practice-info {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  flex: 1;
+}
+
+.practice-header {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20 * @size-factor;
+}
+
+.practice-name {
+  font-size: 44px;
+  font-weight: bold;
+  color: @black;
+  flex: 1;
+}
+
+.practice-difficulty {
+  font-size: 26px;
+  padding: 8 * @size-factor 20 * @size-factor;
+  border-radius: 12 * @size-factor;
+  margin-left: 20 * @size-factor;
+}
+
+.difficulty-初级 {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.difficulty-中级 {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.difficulty-高级 {
+  background-color: #fce4ec;
+  color: #c2185b;
+}
+
+.practice-desc {
+  font-size: 30px;
+  color: @black;
+  line-height: 1.8;
+  width: 100%;
+  margin-bottom: 40 * @size-factor;
+}
+
+.detail-section {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 40 * @size-factor;
+  padding: 30 * @size-factor;
+  background-color: @bg-main;
+  border-radius: 16 * @size-factor;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 20 * @size-factor;
+  width: 100%;
+  padding-bottom: 16 * @size-factor;
+  border-bottom: 1px solid @border-color;
+}
+
+.section-content {
+  font-size: 28px;
+  color: @black;
+  line-height: 1.8;
+  width: 100%;
+}
+
+.steps-list {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.step-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 20 * @size-factor;
+  padding: 20 * @size-factor;
+  background-color: @bg-main;
+  border-radius: 12 * @size-factor;
+  border-left: 4px solid @brand;
+}
+
+.step-number {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 48 * @size-factor;
+  height: 48 * @size-factor;
+  background-color: @brand;
+  color: @white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 24 * @size-factor;
+  flex-shrink: 0;
+  margin-right: 16 * @size-factor;
+}
+
+.step-text {
+  flex: 1;
+  font-size: 28px;
+  color: @black;
+  line-height: 1.7;
+  padding-top: 8 * @size-factor;
+}
+
+.tips-list {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.tip-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 16 * @size-factor;
+  padding: 20 * @size-factor;
+  background-color: @bg-main;
+  border-radius: 12 * @size-factor;
+  border-left: 4px solid @brand;
+}
+
+.tip-icon {
+  font-size: 28px;
+  margin-right: 12 * @size-factor;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 26px;
+  color: @black;
+  line-height: 1.6;
+  padding-top: 4 * @size-factor;
+}
+
+.page-indicator {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20 * @size-factor;
+  background-color: @white;
+  border-top: 1px solid @border-color;
+}
+
+.page-text {
+  font-size: 28px;
+  color: @grey;
+}
+</style>

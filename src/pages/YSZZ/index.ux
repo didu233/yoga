@@ -1,0 +1,395 @@
+<import name="mobads-ad" src="union-quick-app-ad/components/mobadsAd"></import>
+<import name="fuli" src="../Fuli/index.ux"></import>
+<import name="mine" src="../Mine/Mine.ux"></import>
+<import name="bookshop" src="../BookShop/index.ux"></import>
+<template>
+    <!-- template里只能有一个根节点 -->
+    <div>
+        <block if="{{tabIndex===0}}">
+            <bookshop></bookshop>
+            <!-- <mobads-ad
+                type="novel"
+                landing-page="Novel/landingPage"
+                channel-id="1102"
+                appid="f5009857"
+                apid="126976"
+                scid="126976"
+                novel-ad-type="{{1}}"
+                websrc="{{websrc}}"
+                backpress="{{backpressTimes}}"
+            ></mobads-ad> -->
+        </block>
+        <block if="{{tabIndex===1}}">
+            <fuli></fuli>
+        </block>
+        <block if="{{tabIndex===2}}">
+            <mine></mine>
+        </block>
+
+        <div class="tabbar" if="{{showTab}}">
+            <div class="tab-item" @click="clickTab(0)">
+                <image
+                    class="image-active"
+                    src="{{tabIndex===0?'../Common/bookcity_sel.svg':'../Common/bookcity.svg'}}"
+                />
+                <text class="title">书城</text>
+            </div>
+            <!-- <div class="tab-item" @click="clickTab(1)">
+                <image class="image-active" src="../Common/tabRedEvenlope.png" />
+                <text class="title">福利</text>
+            </div> -->
+            <div class="tab-item" @click="clickTab(1)">
+                <image class="image-active" src="../Common/bookshelf.png" />
+                <text class="title">书架</text>
+            </div>
+            <div class="tab-item" @click="clickTab(2)">
+                <image class="image-active" src="{{tabIndex===2?'../Common/mine_sel.svg':'../Common/mine.svg'}}" />
+                <text class="title">我的</text>
+            </div>
+        </div>
+        <!-- 申请华为广告位的隐私弹窗 -->
+        <div class="huaweipop_bg" if="{{isShowHuaweiPop}}">
+            <div class="huaweipop_box">
+                <image class="huaweipop_img" src="./img/huawei_pop.png"></image>
+                <text class="huaweipop_title">温馨提示</text>
+                <text class="huaweipop_content">
+                    <span>欢迎使用本应用！本应用非常重视您的隐私和个人信息保护。在您使用本应用前，请认真阅读</span>
+                    <a href="https://www.xmsqwl.top/ysxy/zxxs.html?type=yonghuxieyi">
+                        <span style="color: #ff830d">《用户协议》</span>
+                    </a>
+                    <span>及</span>
+                    <a href="https://www.xmsqwl.top/ysxy/zxxs.html?type=yinsizhengce">
+                        <span style="color: #ff830d">《隐私政策》</span>
+                    </a>
+                    <span>您同意并接受全部条款后方可开始使用本应用。</span>
+                </text>
+                <div class="huaweipop_btn_box">
+                    <text class="huaweipop_btn_disagree" @click="disagree">不同意</text>
+                    <text class="huaweipop_btn_agree" @click="agree">同意并继续</text>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import ad from '@service.ad'
+    import router from '@system.router';
+    import storage from '@system.storage'
+    import dot from '../Common/dot.js'
+    import adRequest from '../Common/adRequest.js';
+    import webview from '@system.webview';
+
+    let readTimeout;
+    export default {
+        // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
+        private: {
+            websrc: '',
+            backpressTimes: 0,
+            title: '示例页面',
+            intVisible: false,
+            tabIndex: 0,
+            readTime: 0, // 阅读时间
+            showTab: true,
+            isShowHuaweiPop: true,
+        },
+        onInit(options) {
+            let that = this
+            const appState = new BroadcastChannel('appState');
+            this.$page.setSecure(true);
+            console.log('homeoptions', options)
+            if (this.$app.$def.$first) {
+                setTimeout(function () {
+                    that.$app.$def.$canB = true
+                }, 3000)
+                adRequest.getheard(options).then((heard) => {
+                    console.log('请求头拼接完成', heard)
+                    storage.set({
+                        key: 'dot',
+                        value: {
+                            pkg: that.$app.manifest.package,
+                            hapurl: dot.appendQueryParams(`hap://app/${that.$app.manifest.package}/BookDetail`, {
+                                ...options, pkg: that.$app.manifest.package,
+                                pkgVersion: that.$app.$def.$pkgVersion,
+                            })
+                        },
+                        success: (res) => {// that.$app.$def.$getAD('appInit')
+                            adRequest.geAdconfig.call(that, adRequest.fetch).then((res) => {
+                                that.pageConfig = { ...that.$app.$def.$Config.B, aN: 2 }
+                                if (that.pageConfig.show && that.$app.$def.$globalSHOW) {
+                                    console.log('that.$app.$def.$adEventpool({ type: appInit })')
+                                    that.$app.$def.$adEventpool({ type: 'appInit' })
+                                }
+                                dot.setOption(`hap://app/${that.$app.manifest.package}/BookDetail`, {
+                                    ...options, pkg: that.$app.manifest.package,
+                                    pkgVersion: that.$app.$def.$pkgVersion,
+                                }, heard, res).then(() => {
+                                    that.$app.$def.createdDotTimeout()
+                                    that.$app.$def.$first = false
+                                    that.needtoHome = true
+                                    // that.pageADInit()
+                                })
+                            })
+                        }
+                    })
+                })
+            } else {
+                that.pageConfig = { ...that.$app.$def.$Config.B, aN: 2 }
+                // that.pageADInit()
+            }
+            if (this.url) {
+                const url = JSON.parse(this.url);
+                this.websrc = url && url.url;
+                if (!!~this.websrc.indexOf('/boxnovel/content')) {
+                    this.pageName = 'reader';
+                }
+            }
+        },
+        onShow(options) {
+            let that = this;
+            if (this.tabIndex === 0) {
+                this.actionTimeout()
+            }
+            storage.get({
+                key: 'isAgreeAgreement',
+                success: function (data) {
+                    if (data === 'true') {
+                        that.isShowHuaweiPop = false;
+                    } else {
+                        setTimeout(() => {
+                            that.isShowHuaweiPop = true;
+                        }, 500)
+                    }
+                },
+                fail: function (data, code) {
+                    console.log("handling fail, code = " + code);
+                }
+            })
+        },
+        actionTimeout() {
+            readTimeout = setTimeout(() => {
+                this.readTime++
+            }, 60000);
+        },
+        clickTab(i) {
+            let that = this
+            if (i === 1) {
+                // router.push({
+                //     uri: 'Fuli',
+                // })
+                router.push({
+                    uri: 'BookShop/BookList',
+                    params: { type: 'bookShelf' }
+                })
+            } else {
+                this.tabIndex = i;
+                if (i === 0) {
+                    this.actionTimeout()
+                } else {
+                    storage.get({
+                        key: 'readTime',
+                        default: 0,
+                        success: function (data) {
+                            storage.set({
+                                key: 'readTime',
+                                value: data + that.readTime,
+                                success: function (data) {
+                                    console.log("handling success");
+                                },
+                                fail: function (data, code) {
+                                    console.log("handling fail, code = " + code);
+                                }
+                            })
+                        }
+                    })
+                    clearTimeout('readTimeout');
+                }
+            }
+        },
+        changeTabactive(e) {
+            // switch tab
+            this.tabIndex = e.index;
+            if (e.index === 1) {
+                router.push({
+                    uri: 'Fuli'
+                })
+                this.tabIndex = 0;
+            }
+            console.log('----------switch tab: ' + e.index, '----------switch tabIndex: ' + this.tabIndex);
+        },
+        disagree() {
+            this.$app.exit()
+        },
+        agree() {
+            storage.set({
+                key: 'isAgreeAgreement',
+                value: 'true',
+                success: function (data) {
+                    console.log("handling success");
+                },
+                fail: function (data, code) {
+                    console.log("handling fail, code = " + code);
+                }
+            })
+            this.isShowHuaweiPop = false
+        },
+    };
+</script>
+<style>
+    .container {
+        flex-direction: column;
+        /* justify-content: space-between; */
+    }
+
+    .tabs {
+        background-color: #f2f2f2;
+        height: 100px;
+        min-height: 100px;
+        width: 100%;
+        position: fixed;
+        bottom: 0px;
+    }
+
+    .tab-content {
+        margin-bottom: 100px;
+        height: 1000px;
+        width: 100%;
+    }
+
+    .tab-item {
+        flex-direction: column;
+        align-items: center;
+        margin-left: 33px;
+        margin-right: 33px;
+        min-height: 100%;
+        padding: 20px 0;
+        width: 170.8px;
+        /* height: 104.2px; */
+    }
+    .safe {
+        height: 20px;
+        width: 100%;
+    }
+    .safe_b {
+        height: 80px;
+        width: 100%;
+    }
+    .image-active {
+        width: 50px;
+        height: 50px;
+        resize-mode: contain;
+    }
+
+    .image-normal {
+        width: 50px;
+        height: 50px;
+        resize-mode: contain;
+    }
+
+    .tab-item text {
+        font-size: 20.8px;
+        margin-top: 10px;
+        text-align: center;
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .tab-item text:active {
+        font-size: 21px;
+        color: #cd2325;
+        margin-top: 6px;
+        text-align: center;
+    }
+
+    .maintab-shadow-bottom {
+        width: 100%;
+        height: 20px;
+    }
+    .demo-page {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .title {
+        font-size: 40px;
+        text-align: center;
+    }
+    .btn {
+        width: 550px;
+        height: 86px;
+        margin-top: 75px;
+        border-radius: 43px;
+        background-color: #09ba07;
+        font-size: 30px;
+        color: #ffffff;
+    }
+    .tabbar {
+        height: 133px;
+        width: 100%;
+        min-height: 105px;
+        border-color: #bbbbbb;
+        color: #bbbbbb;
+        flex-shrink: 0;
+        position: fixed;
+        bottom: 0;
+        background-color: #fff;
+        justify-content: space-between;
+        padding-bottom: 20px;
+    }
+    /* 华为隐私协议弹窗 --end */
+    .huaweipop_bg {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .huaweipop_box {
+        width: 600px;
+        height: 740px;
+        flex-direction: column;
+        align-items: center;
+        background-color: #ffffff;
+        border-radius: 20px;
+    }
+    .huaweipop_img {
+        width: 600px;
+        height: 228px;
+    }
+    .huaweipop_title {
+        font-size: 36px;
+        color: #333333;
+        font-weight: bold;
+        line-height: 86px;
+    }
+    .huaweipop_content {
+        font-size: 30px;
+        color: #666666;
+        line-height: 44px;
+        width: 496px;
+    }
+    .huaweipop_btn_box {
+        width: 496px;
+        height: 80px;
+        margin-top: 60px;
+        justify-content: space-between;
+    }
+    .huaweipop_btn_disagree {
+        width: 220px;
+        height: 80px;
+        border: 2px solid #979797;
+        color: #999999;
+        text-align: center;
+        border-radius: 12px;
+    }
+    .huaweipop_btn_agree {
+        width: 220px;
+        height: 80px;
+        color: #ffffff;
+        background: linear-gradient(90deg, #ffb622, #ff7f0b);
+        text-align: center;
+        border-radius: 12px;
+    }
+    /* 华为隐私协议弹窗 --end */
+</style>

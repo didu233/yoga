@@ -1,0 +1,247 @@
+<template>
+  <div class="wrapper">
+    <div class="time-selector">
+      <text class="selector-title">选择冥想时长</text>
+      <div class="time-buttons">
+        <div
+          class="time-btn"
+          for="{{(index, item) in timeOptions}}"
+          onclick="selectTime(item)"
+        >
+          <text class="time-btn-text">{{item}}分钟</text>
+        </div>
+      </div>
+    </div>
+    <div class="timer-section">
+      <text class="timer-display">{{displayTime}}</text>
+      <text class="timer-label">{{timerLabel}}</text>
+    </div>
+    <div class="control-buttons">
+      <input
+        class="control-btn start-btn"
+        type="button"
+        value="{{startButtonText}}"
+        onclick="toggleTimer"
+        disabled="{{isRunning && selectedTime === 0}}"
+      />
+      <input
+        class="control-btn reset-btn"
+        type="button"
+        value="重置"
+        onclick="resetTimer"
+        disabled="{{selectedTime === 0}}"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import meditationData from '../../data/meditation.js'
+
+export default {
+  private: {
+    timeOptions: [],
+    selectedTime: 0, // 选中的时间（分钟）
+    remainingSeconds: 0, // 剩余秒数
+    isRunning: false,
+    timer: null,
+    displayTime: '00:00',
+    timerLabel: '请选择冥想时长',
+    startButtonText: '开始'
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '计时冥想' })
+    this.timeOptions = meditationData
+  },
+  onDestroy() {
+    this.clearTimer()
+  },
+  selectTime(item) {
+    if (!item) return
+    if (this.isRunning) {
+      $utils.showToast('请先停止当前计时')
+      return
+    }
+    this.selectedTime = parseInt(item)
+    this.remainingSeconds = this.selectedTime * 60
+    this.displayTime = $utils.formatTime(this.remainingSeconds)
+    this.timerLabel = `已选择 ${this.selectedTime} 分钟`
+  },
+  toggleTimer() {
+    if (this.selectedTime === 0) {
+      $utils.showToast('请先选择冥想时长')
+      return
+    }
+    if (this.isRunning) {
+      this.pauseTimer()
+    } else {
+      this.startTimer()
+    }
+  },
+  startTimer() {
+    if (this.remainingSeconds <= 0) {
+      $utils.showToast('时间已到')
+      return
+    }
+    this.isRunning = true
+    this.startButtonText = '暂停'
+    this.timerLabel = '冥想进行中...'
+    this.timer = setInterval(() => {
+      this.remainingSeconds--
+      this.displayTime = $utils.formatTime(this.remainingSeconds)
+      if (this.remainingSeconds <= 0) {
+        this.completeTimer()
+      }
+    }, 1000)
+  },
+  pauseTimer() {
+    this.isRunning = false
+    this.startButtonText = '继续'
+    this.timerLabel = '已暂停'
+    this.clearTimer()
+  },
+  resetTimer() {
+    if (this.isRunning) {
+      this.clearTimer()
+    }
+    this.isRunning = false
+    this.startButtonText = '开始'
+    this.selectedTime = 0
+    this.remainingSeconds = 0
+    this.displayTime = '00:00'
+    this.timerLabel = '请选择冥想时长'
+  },
+  completeTimer() {
+    this.clearTimer()
+    this.isRunning = false
+    this.startButtonText = '开始'
+    this.timerLabel = '冥想完成！'
+    $utils.showToast('冥想时间到，辛苦了！')
+    // 3秒后恢复初始状态
+    setTimeout(() => {
+      if (!this.isRunning) {
+        this.resetTimer()
+      }
+    }, 3000)
+  },
+  clearTimer() {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  background-color: @bg-main;
+  padding: 20 * @size-factor;
+}
+
+.time-selector {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-top: 20 * @size-factor;
+  margin-bottom: 40 * @size-factor;
+}
+
+.selector-title {
+  font-size: 32px;
+  color: @black;
+  margin-bottom: 24 * @size-factor;
+}
+
+.time-buttons {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.time-btn {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 140 * @size-factor;
+  height: 80 * @size-factor;
+  background-color: @white;
+  border-radius: 12 * @size-factor;
+  margin: 8 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.time-btn-text {
+  font-size: 28px;
+  color: @black;
+  text-align: center;
+}
+
+.timer-section {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  margin: 40 * @size-factor 0;
+}
+
+.timer-display {
+  font-size: 120px;
+  font-weight: bold;
+  color: @brand;
+  margin-bottom: 20 * @size-factor;
+}
+
+.timer-label {
+  font-size: 28px;
+  color: @grey;
+}
+
+.control-buttons {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 40 * @size-factor;
+}
+
+.control-btn {
+  width: 200 * @size-factor;
+  height: 88 * @size-factor;
+  border-radius: 44 * @size-factor;
+  font-size: 32px;
+  margin: 0 12 * @size-factor;
+  /* border: none; */
+}
+
+.start-btn {
+  background-color: @brand;
+  color: @white;
+}
+
+.start-btn:disabled {
+  background-color: @border-color;
+  color: @grey;
+}
+
+.reset-btn {
+  background-color: @white;
+  color: @black;
+  border: 2px solid @border-color;
+}
+
+.reset-btn:disabled {
+  background-color: @bg-main;
+  color: @grey;
+  border-color: @border-color;
+}
+</style>

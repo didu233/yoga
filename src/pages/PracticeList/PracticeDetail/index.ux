@@ -1,0 +1,276 @@
+<template>
+  <div class="wrapper">
+    <scroll-view class="scroll-content">
+      <image class="detail-image" src="{{image}}" />
+      <div class="detail-content">
+        <div class="detail-header">
+          <text class="detail-name">{{name}}</text>
+          <!-- linshi -->
+          <!-- <text class="detail-difficulty difficulty-{{difficulty}}" -->
+          <text class="detail-difficulty difficulty"
+            >{{difficulty}}</text
+          >
+        </div>
+        <div class="detail-section">
+          <text class="section-title">动作说明</text>
+          <text class="section-content">{{description}}</text>
+        </div>
+        <div class="detail-section">
+          <text class="section-title">练习步骤</text>
+          <div class="steps-list">
+            <div class="step-item" for="{{(index, step) in steps}}">
+              <text class="step-number">{{index + 1}}</text>
+              <text class="step-text">{{step}}</text>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <text class="section-title">注意事项</text>
+          <div class="tips-list">
+            <div class="tip-item" for="{{(index, tip) in tips}}">
+              <text class="tip-icon">💡</text>
+              <text class="tip-text">{{tip}}</text>
+            </div>
+          </div>
+        </div>
+      </div>
+    </scroll-view>
+  </div>
+</template>
+
+<script>
+import practicesData from '../../../data/practices.js'
+
+export default {
+  data: {
+    id: '',
+    name: '',
+    image: '',
+    difficulty: '',
+    description: '',
+    steps: [],
+    tips: []
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '动作详情' })
+    
+    if (!this.id) {
+      $utils.showToast('参数错误')
+      return
+    }
+    
+    try {
+      const practiceId = parseInt(this.id)
+      if (isNaN(practiceId)) {
+        $utils.showToast('参数错误')
+        return
+      }
+      
+      const practice = practicesData.find(item => item.id === practiceId)
+      if (practice) {
+        this.name = practice.name
+        this.image = practice.image
+        this.difficulty = practice.difficulty
+        this.description = practice.description
+        this.steps = practice.steps
+        this.tips = practice.tips
+        this.$page.setTitleBar({ text: practice.name })
+      } else {
+        $utils.showToast('未找到该动作')
+      }
+    } catch (error) {
+      console.error('加载动作详情失败:', error)
+      $utils.showToast('加载失败')
+    }
+  },
+  onDestroy() {
+    // 清理数据，避免页面缓存问题
+    this.id = ''
+    this.name = ''
+    this.image = ''
+    this.difficulty = ''
+    this.description = ''
+    this.steps = []
+    this.tips = []
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+  background-color: @bg-main;
+}
+
+.scroll-content {
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+}
+
+.detail-image {
+  width: 100%;
+  height: 500 * @size-factor;
+  background-color: @bg-main;
+  flex-shrink: 0;
+}
+
+.detail-content {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 40 * @size-factor;
+  background-color: @white;
+  border-radius: 30 * @size-factor 30 * @size-factor 0 0;
+  margin-top: -30 * @size-factor;
+  flex: 1;
+}
+
+.detail-header {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 40 * @size-factor;
+  padding-bottom: 30 * @size-factor;
+  border-bottom: 2px solid @border-color;
+}
+
+.detail-name {
+  font-size: 44px;
+  font-weight: bold;
+  color: @black;
+  width: 100%;
+  margin-bottom: 16 * @size-factor;
+}
+
+.detail-difficulty {
+  font-size: 26px;
+  padding: 8 * @size-factor 20 * @size-factor;
+  border-radius: 12 * @size-factor;
+}
+
+.difficulty-初级 {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.difficulty-中级 {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.difficulty-高级 {
+  background-color: #fce4ec;
+  color: #c2185b;
+}
+
+.detail-section {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 50 * @size-factor;
+  padding: 30 * @size-factor;
+  background-color: @bg-main;
+  border-radius: 16 * @size-factor;
+}
+
+.section-title {
+  font-size: 34px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 24 * @size-factor;
+  width: 100%;
+  padding-bottom: 16 * @size-factor;
+  border-bottom: 1px solid @border-color;
+}
+
+.section-content {
+  font-size: 30px;
+  color: @black;
+  line-height: 1.8;
+  width: 100%;
+}
+
+.steps-list {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.step-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 24 * @size-factor;
+  padding: 20 * @size-factor;
+  background-color: @white;
+  border-radius: 12 * @size-factor;
+  border-left: 4px solid @brand;
+}
+
+.step-number {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 52 * @size-factor;
+  height: 52 * @size-factor;
+  background-color: @brand;
+  color: @white;
+  font-size: 26px;
+  font-weight: bold;
+  border-radius: 26 * @size-factor;
+  flex-shrink: 0;
+  margin-right: 20 * @size-factor;
+}
+
+.step-text {
+  flex: 1;
+  font-size: 30px;
+  color: @black;
+  line-height: 1.8;
+  padding-top: 8 * @size-factor;
+}
+
+.tips-list {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.tip-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 20 * @size-factor;
+  padding: 24 * @size-factor;
+  background-color: @white;
+  border-radius: 12 * @size-factor;
+  border-left: 4px solid @brand;
+}
+
+.tip-icon {
+  font-size: 32px;
+  margin-right: 16 * @size-factor;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 28px;
+  color: @black;
+  line-height: 1.7;
+  padding-top: 4 * @size-factor;
+}
+</style>
