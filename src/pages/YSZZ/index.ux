@@ -361,12 +361,10 @@
         font-size: 36px;
         color: #333333;
         font-weight: bold;
-        line-height: 86px;
     }
     .huaweipop_content {
         font-size: 30px;
         color: #666666;
-        line-height: 44px;
         width: 496px;
     }
     .huaweipop_btn_box {

@@ -1,26 +1,52 @@
+<import name="tab-bar-custom" src="../../components/TabBar/index.ux"></import>
 <template>
   <div class="wrapper">
-    <div class="header">
-      <text class="app-title">轻瑜伽</text>
-      <text class="app-subtitle">让身心回归平静</text>
+    <div class="content-main">
+      <!-- 今日状态 -->
+      <div class="section status-card">
+        <text class="section-label">今日状态</text>
+        <div class="status-inner">
+          <image class="status-image" if="{{statusImage}}" src="{{statusImage}}" />
+          <div class="status-text-wrap">
+            <text class="status-title">{{statusTitle}}</text>
+            <text class="status-desc">{{statusDesc}}</text>
+          </div>
+        </div>
+      </div>
+      <!-- 今日建议 -->
+      <div class="section suggest-card">
+        <text class="section-label">今日建议</text>
+        <div class="suggest-inner">
+          <text class="suggest-dir">{{todaySuggestion}}</text>
+          <text class="suggest-hint">{{todayHint}}</text>
+        </div>
+      </div>
+      <!-- 快捷工具入口 -->
+      <div class="section tools-section">
+        <text class="section-label">快捷工具</text>
+        <div class="tool-card" onclick="goToMeditation">
+          <text class="tool-icon">🧘</text>
+          <text class="tool-title">练习计时</text>
+          <text class="tool-desc">专注当下，静心冥想</text>
+        </div>
+        <div class="tool-card" onclick="goToPractice">
+          <text class="tool-icon">🧘‍♀️</text>
+          <text class="tool-title">瑜伽动作</text>
+          <text class="tool-desc">学习标准体式与步骤</text>
+        </div>
+        <div class="tool-card" onclick="goToKnowledge">
+          <text class="tool-icon">📚</text>
+          <text class="tool-title">瑜伽小知识</text>
+          <text class="tool-desc">了解更多瑜伽知识</text>
+        </div>
+      </div>
+      <!-- 底部说明 -->
+      <div class="footer-note">
+        <text class="footer-note-text">轻瑜伽 · 专注工具，助你每日一点练习</text>
+      </div>
     </div>
-    <div class="content">
-      <div class="card" onclick="goToMeditation">
-        <div class="card-icon meditation-icon">🧘</div>
-        <text class="card-title">计时冥想</text>
-        <text class="card-desc">专注当下，静心冥想</text>
-      </div>
-      <div class="card" onclick="goToPractice">
-        <div class="card-icon practice-icon">🧘‍♀️</div>
-        <text class="card-title">练习动作</text>
-        <text class="card-desc">学习标准瑜伽体式</text>
-      </div>
-      <div class="card" onclick="goToKnowledge">
-        <div class="card-icon knowledge-icon">📚</div>
-        <text class="card-title">瑜伽小知识</text>
-        <text class="card-desc">了解更多瑜伽知识</text>
-      </div>
-    </div>
+    <!-- 底部 TabBar -->
+    <tab-bar-custom current="{{0}}"></tab-bar-custom>
     <!-- 隐私政策弹窗 -->
     <div class="privacy-popup-bg" if="{{isShowPrivacyPopup}}">
       <div class="privacy-popup-box">
@@ -45,15 +71,31 @@
 import router from '@system.router'
 import storage from '@system.storage'
 
+const SUGGESTIONS = [
+  { dir: '呼吸与放松', hint: '适合做 5～10 分钟呼吸练习或短时冥想。' },
+  { dir: '柔韧与拉伸', hint: '可多做肩颈、背部拉伸，缓解久坐疲劳。' },
+  { dir: '平衡与稳定', hint: '适合练习树式、战士一等站立体式。' },
+  { dir: '力量与核心', hint: '可加入平板、船式等核心体式。' },
+  { dir: '综合练习', hint: '安排 15～20 分钟串联，兼顾呼吸与体式。' },
+  { dir: '休息与修复', hint: '以婴儿式、仰卧放松为主，少做强度练习。' },
+  { dir: '综合练习', hint: '周末可适当延长练习时间，巩固本周内容。' }
+]
+
 export default {
   private: {
-    isShowPrivacyPopup: false
+    isShowPrivacyPopup: false,
+    statusTitle: '新的一天',
+    statusDesc: '从一段简短练习开始吧',
+    statusImage: '',
+    todaySuggestion: '',
+    todayHint: ''
   },
   onInit() {
     this.$page.setTitleBar({ text: '轻瑜伽' })
+    this.setTodayStatus()
+    this.setTodaySuggestion()
   },
   onShow() {
-    // 检查是否已同意隐私政策
     const that = this
     storage.get({
       key: 'isAgreePrivacyPolicy',
@@ -66,35 +108,48 @@ export default {
           }, 500)
         }
       },
-      fail: function(data, code) {
-        // 如果获取失败，显示弹窗
+      fail: function() {
         setTimeout(() => {
           that.isShowPrivacyPopup = true
         }, 500)
       }
     })
   },
+  setTodayStatus() {
+    const hour = new Date().getHours()
+    if (hour < 12) {
+      this.statusTitle = '早安'
+      this.statusDesc = '晨间适合呼吸与轻度拉伸'
+      this.statusImage = '/assets/images/Chakras-cuate.png'
+    } else if (hour < 18) {
+      this.statusTitle = '午后'
+      this.statusDesc = '可做短时放松或肩颈拉伸'
+      this.statusImage = '/assets/images/Yoga-practice-bro.png'
+    } else {
+      this.statusTitle = '晚间'
+      this.statusDesc = '适合舒缓练习或冥想'
+      this.statusImage = '/assets/images/Mindfulness-amico.png'
+    }
+  },
+  setTodaySuggestion() {
+    const index = Math.floor(Math.random() * SUGGESTIONS.length)
+    const item = SUGGESTIONS[index]
+    this.todaySuggestion = item.dir
+    this.todayHint = item.hint
+  },
   goToMeditation() {
-    router.push({
-      uri: '/pages/Meditation'
-    })
+    router.push({ uri: '/pages/Meditation' })
   },
   goToPractice() {
-    router.push({
-      uri: 'pages/PracticeList'
-    })
+    router.push({ uri: 'pages/PracticeList' })
   },
   goToKnowledge() {
-    router.push({
-      uri: 'pages/KnowledgeList'
-    })
+    router.push({ uri: 'pages/KnowledgeList' })
   },
   goToPrivacyPolicy(type) {
     router.push({
       uri: 'pages/PrivacyPolicy',
-      params: {
-        tab: type === 'agreement' ? 'agreement' : 'privacy'
-      }
+      params: { tab: type === 'agreement' ? 'agreement' : 'privacy' }
     })
   },
   disagree() {
@@ -105,12 +160,8 @@ export default {
     storage.set({
       key: 'isAgreePrivacyPolicy',
       value: 'true',
-      success: function(data) {
-        console.log('隐私政策同意状态已保存')
-      },
-      fail: function(data, code) {
-        console.log('保存失败，code = ' + code)
-      }
+      success: function() {},
+      fail: function() {}
     })
     this.isShowPrivacyPopup = false
   }
@@ -122,73 +173,176 @@ export default {
 
 .wrapper {
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+  align-items: stretch;
   flex: 1;
+  width: 100%;
   background-color: @bg-main;
   position: relative;
 }
 
-.header {
+.content-main {
+  flex: 1;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
-  padding: 40 * @size-factor 20 * @size-factor 30 * @size-factor;
+  padding: 24 * @size-factor 20 * @size-factor 16 * @size-factor;
+  padding-bottom: 120px;
 }
 
-.app-title {
-  font-size: 48px;
+.section {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin-bottom: 24 * @size-factor;
+}
+
+.section-label {
+  font-size: 24px;
+  color: @grey;
+  margin-bottom: 12 * @size-factor;
+  padding-left: 4 * @size-factor;
+}
+
+/* 今日状态卡片 - 一屏大卡片 + 图片 */
+.status-card .status-inner {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-height: 520 * @size-factor;
+  background-color: @white;
+  border-radius: 24 * @size-factor;
+  padding: 0;
+  border-left-width: 6 * @size-factor;
+  border-left-color: @brand;
+  overflow: hidden;
+}
+
+.status-image {
+  width: 100%;
+  height: 520 * @size-factor;
+  object-fit: contain;
+  object-position: center;
+  background-color: #FDF5EF;
+}
+
+.status-text-wrap {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 28 * @size-factor 28 * @size-factor 32 * @size-factor;
+}
+
+.status-title {
+  font-size: 42px;
   font-weight: bold;
   color: @black;
-  margin-bottom: 10 * @size-factor;
+  margin-bottom: 12 * @size-factor;
+  width: 100%;
 }
 
-.app-subtitle {
+.status-desc {
   font-size: 28px;
   color: @grey;
+  width: 100%;
 }
 
-.content {
+/* 今日建议 */
+.suggest-card .suggest-inner {
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  padding: 0 20 * @size-factor 20 * @size-factor;
-}
-
-.card {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background-color: @white;
+  background-color: #FDF5EF;
   border-radius: 16 * @size-factor;
-  padding: 30 * @size-factor;
-  margin-bottom: 24 * @size-factor;
+  padding: 24 * @size-factor;
   border: 1px solid @border-color;
-  flex-shrink: 0;
 }
 
-.card-icon {
-  font-size: 60px;
-  margin-bottom: 16 * @size-factor;
-}
-
-.card-title {
-  font-size: 36px;
+.suggest-dir {
+  font-size: 30px;
   font-weight: bold;
-  color: @black;
+  color: @brand;
   margin-bottom: 8 * @size-factor;
+  width: 100%;
 }
 
-.card-desc {
+.suggest-hint {
   font-size: 26px;
   color: @grey;
+  width: 100%;
+}
+
+/* 快捷工具 */
+.tools-section {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.tool-card {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  flex-shrink: 0;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 24 * @size-factor 28 * @size-factor;
+  margin-bottom: 16 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.tool-icon {
+  font-size: 44px;
+  margin-bottom: 12 * @size-factor;
+}
+
+.tool-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 6 * @size-factor;
+  width: 100%;
+}
+
+.tool-desc {
+  font-size: 26px;
+  color: @grey;
+  width: 100%;
+}
+
+/* 底部说明 */
+.footer-note {
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20 * @size-factor 0 24 * @size-factor;
+}
+
+.footer-note-text {
+  font-size: 24px;
+  color: @grey;
+  margin-bottom: 16 * @size-factor;
+  width: 100%;
   text-align: center;
 }
 
-/* 隐私政策弹窗样式 */
+.footer-legal {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-legal-link {
+  font-size: 24px;
+  color: @brand;
+  text-decoration: underline;
+}
+
+.footer-legal-divider {
+  font-size: 24px;
+  color: @grey;
+  margin: 0 12 * @size-factor;
+}
+
+/* 隐私弹窗 */
 .privacy-popup-bg {
   width: 100%;
   height: 100%;
@@ -224,7 +378,6 @@ export default {
 .privacy-popup-content {
   font-size: 28px;
   color: @grey;
-  line-height: 1.6;
   width: 100%;
   margin-bottom: 40 * @size-factor;
 }

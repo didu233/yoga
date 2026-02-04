@@ -1,0 +1,78 @@
+<template>
+  <div class="tabbar">
+    <div class="tab-item" for="{{(index, item) in tabs}}" onclick="onTabClick(index)">
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-text {{current === index ? 'active' : ''}}">{{item.title}}</text>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  props: {
+    current: {
+      default: 0
+    }
+  },
+  data: {
+    tabs: [
+      { title: '首页', icon: '🏠' },
+      { title: '工具', icon: '🧰' },
+      { title: '我的', icon: '👤' }
+    ]
+  },
+  onTabClick(index) {
+    if (index === this.current) return
+    if (index === 0) {
+      router.clear()
+      router.replace({ uri: '/pages/Home' })
+      return
+    }
+    const uris = ['/pages/Home', '/pages/Tools', '/pages/Mine']
+    router.push({ uri: uris[index] })
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 100px;
+  background-color: @white;
+  border-top-width: 1px;
+  border-top-color: @border-color;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab-item {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.tab-icon {
+  font-size: 40px;
+  margin-bottom: 4px;
+}
+
+.tab-text {
+  font-size: 22px;
+  color: @grey;
+}
+
+.tab-text.active {
+  color: @brand;
+  font-weight: bold;
+}
+</style>

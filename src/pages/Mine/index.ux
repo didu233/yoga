@@ -1,0 +1,223 @@
+<import name="tab-bar-custom" src="../../components/TabBar/index.ux"></import>
+<template>
+  <div class="wrapper">
+    <div class="content-main">
+      <div class="profile-card">
+        <image class="avatar" src="{{avatar}}"></image>
+        <div class="profile-text">
+          <text class="name">{{userName}}</text>
+          <text class="desc">轻瑜伽 · 每天一点点进步</text>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="cell" onclick="openAgreement">
+          <text class="cell-title">用户协议</text>
+          <text class="cell-arrow">›</text>
+        </div>
+        <div class="cell" onclick="openPrivacy">
+          <text class="cell-title">隐私政策</text>
+          <text class="cell-arrow">›</text>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="cell cell-menu" onclick="openFeedback">
+          <text class="cell-title">投诉与建议</text>
+          <text class="cell-arrow">›</text>
+        </div>
+        <div class="cell cell-menu" onclick="contactService">
+          <text class="cell-title">联系客服</text>
+          <text class="cell-arrow">›</text>
+        </div>
+      </div>
+    </div>
+    <tab-bar-custom current="{{2}}"></tab-bar-custom>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+import prompt from '@system.prompt'
+
+const USER_NAME_KEY = 'yoga_user_name'
+const USER_AVATAR_KEY = 'yoga_user_avatar'
+const DEFAULT_AVATAR = '/assets/images/logo.png'
+const CONTACT_EMAIL = 'service@yoga.example.com'
+const CONTACT_PHONE = '400-555-9263'
+
+export default {
+  private: {
+    userName: '',
+    avatar: DEFAULT_AVATAR
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '我的' })
+  },
+  onShow() {
+    this.initUserInfo()
+  },
+  initUserInfo() {
+    const that = this
+    // 读取头像
+    storage.get({
+      key: USER_AVATAR_KEY,
+      success(data) {
+        if (data) {
+          that.avatar = data
+        } else {
+          that.avatar = DEFAULT_AVATAR
+          storage.set({ key: USER_AVATAR_KEY, value: DEFAULT_AVATAR })
+        }
+      },
+      fail() {
+        that.avatar = DEFAULT_AVATAR
+        storage.set({ key: USER_AVATAR_KEY, value: DEFAULT_AVATAR })
+      }
+    })
+
+    // 读取昵称
+    storage.get({
+      key: USER_NAME_KEY,
+      success(data) {
+        if (data) {
+          that.userName = data
+        } else {
+          const name = that.generateRandomName()
+          that.userName = name
+          storage.set({ key: USER_NAME_KEY, value: name })
+        }
+      },
+      fail() {
+        const name = that.generateRandomName()
+        that.userName = name
+        storage.set({ key: USER_NAME_KEY, value: name })
+      }
+    })
+  },
+  generateRandomName() {
+    const adjectives = ['温柔', '自在', '宁静', '轻盈', '元气', '治愈', '暖暖', '清晨', '晚风']
+    const nouns = ['瑜伽者', '练习者', '呼吸者', '小行星', '小森林', '云朵', '海浪', '晨光']
+    const a = adjectives[Math.floor(Math.random() * adjectives.length)]
+    const n = nouns[Math.floor(Math.random() * nouns.length)]
+    return a + n
+  },
+  openAgreement() {
+    router.push({
+      uri: 'pages/PrivacyPolicy',
+      params: { tab: 'agreement' }
+    })
+  },
+  openPrivacy() {
+    router.push({
+      uri: 'pages/PrivacyPolicy',
+      params: { tab: 'privacy' }
+    })
+  },
+  openFeedback() {
+    router.push({ uri: 'pages/Feedback' })
+  },
+  contactService() {
+    prompt.showDialog({
+      title: '联系客服',
+      message: '客服邮箱：' + CONTACT_EMAIL + '\n\n客服热线：' + CONTACT_PHONE + '\n工作时间：09:00-18:00',
+      buttons: [{ text: '确定', color: '#E6A87C' }],
+      success: function() {}
+    })
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  width: 100%;
+  background-color: @bg-main;
+}
+
+.content-main {
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 24 * @size-factor 20 * @size-factor 16 * @size-factor;
+  padding-bottom: 120px;
+}
+
+.profile-card {
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  background-color: @white;
+  border-radius: 20 * @size-factor;
+  padding: 28 * @size-factor 24 * @size-factor;
+  margin-bottom: 24 * @size-factor;
+}
+
+.avatar {
+  width: 120 * @size-factor;
+  height: 120 * @size-factor;
+  border-radius: 60 * @size-factor;
+  background-color: @border-color;
+  margin-right: 24 * @size-factor;
+}
+
+.profile-text {
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.name {
+  font-size: 34px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 8 * @size-factor;
+}
+
+.desc {
+  font-size: 26px;
+  color: @grey;
+}
+
+.section {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin-bottom: 16 * @size-factor;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.cell {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24 * @size-factor;
+  border-bottom-width: 1px;
+  border-bottom-color: @border-color;
+}
+
+.cell:last-child {
+  border-bottom-width: 0;
+}
+
+.cell-title {
+  font-size: 30px;
+  color: @black;
+}
+
+.cell-arrow {
+  font-size: 30px;
+  color: @grey;
+  margin-left: 12 * @size-factor;
+}
+</style>
+

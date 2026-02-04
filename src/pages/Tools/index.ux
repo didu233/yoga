@@ -1,0 +1,138 @@
+<import name="tab-bar-custom" src="../../components/TabBar/index.ux"></import>
+<template>
+  <div class="wrapper">
+    <div class="content-main">
+      <div class="header">
+        <text class="title">常用工具</text>
+        <text class="subtitle">从这里快速进入练习工具</text>
+      </div>
+      <div class="section tools-section">
+        <div class="tool-card" onclick="goToMeditation">
+          <text class="tool-icon">🧘</text>
+          <div class="tool-text">
+            <text class="tool-title">练习计时</text>
+            <text class="tool-desc">专注当下的冥想计时器</text>
+          </div>
+        </div>
+        <div class="tool-card" onclick="goToPractice">
+          <text class="tool-icon">🧘‍♀️</text>
+          <div class="tool-text">
+            <text class="tool-title">瑜伽动作</text>
+            <text class="tool-desc">查看标准体式与练习步骤</text>
+          </div>
+        </div>
+        <div class="tool-card" onclick="goToKnowledge">
+          <text class="tool-icon">📚</text>
+          <div class="tool-text">
+            <text class="tool-title">瑜伽小知识</text>
+            <text class="tool-desc">了解安全练习与瑜伽理念</text>
+          </div>
+        </div>
+      </div>
+    </div>
+    <tab-bar-custom current="{{1}}"></tab-bar-custom>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  onInit() {
+    this.$page.setTitleBar({ text: '工具' })
+  },
+  goToMeditation() {
+    router.push({ uri: '/pages/Meditation' })
+  },
+  goToPractice() {
+    router.push({ uri: 'pages/PracticeList' })
+  },
+  goToKnowledge() {
+    router.push({ uri: 'pages/KnowledgeList' })
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  width: 100%;
+  background-color: @bg-main;
+}
+
+.content-main {
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 24 * @size-factor 20 * @size-factor 16 * @size-factor;
+  padding-bottom: 120px;
+}
+
+.header {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 24 * @size-factor;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 8 * @size-factor;
+}
+
+.subtitle {
+  font-size: 26px;
+  color: @grey;
+}
+
+.section {
+  width: 100%;
+}
+
+.tools-section {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.tool-card {
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 20 * @size-factor 24 * @size-factor;
+  margin-bottom: 16 * @size-factor;
+  border: 1px solid @border-color;
+}
+
+.tool-icon {
+  font-size: 42px;
+  margin-right: 18 * @size-factor;
+}
+
+.tool-text {
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.tool-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 6 * @size-factor;
+}
+
+.tool-desc {
+  font-size: 26px;
+  color: @grey;
+}
+</style>
+

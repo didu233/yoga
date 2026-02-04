@@ -1,8 +1,7 @@
 <template>
   <div class="wrapper">
-    <scroll-view class="scroll-content">
-      <image class="detail-image" src="{{image}}" />
-      <div class="detail-content">
+    <image class="detail-image" src="{{image}}" />
+    <div class="detail-content">
         <div class="detail-header">
           <text class="detail-name">{{name}}</text>
           <!-- linshi -->
@@ -19,7 +18,9 @@
           <text class="section-title">练习步骤</text>
           <div class="steps-list">
             <div class="step-item" for="{{(index, step) in steps}}">
-              <text class="step-number">{{index + 1}}</text>
+              <div class="step-number-wrap">
+                <text class="step-number">{{index + 1}}</text>
+              </div>
               <text class="step-text">{{step}}</text>
             </div>
           </div>
@@ -34,7 +35,6 @@
           </div>
         </div>
       </div>
-    </scroll-view>
   </div>
 </template>
 
@@ -99,18 +99,15 @@ export default {
 <style lang="less">
 @import './../../../assets/styles/style.less';
 
+/* 使用页面级滚动：内容自然撑开，由页面容器滚动 */
 .wrapper {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  flex: 1;
-  background-color: @bg-main;
-}
-
-.scroll-content {
   width: 100%;
-  flex: 1;
-  flex-direction: column;
+  min-height: 100%;
+  background-color: @bg-main;
+  padding-bottom: 40 * @size-factor;
 }
 
 .detail-image {
@@ -129,7 +126,6 @@ export default {
   background-color: @white;
   border-radius: 30 * @size-factor 30 * @size-factor 0 0;
   margin-top: -30 * @size-factor;
-  flex: 1;
 }
 
 .detail-header {
@@ -195,7 +191,6 @@ export default {
 .section-content {
   font-size: 30px;
   color: @black;
-  line-height: 1.8;
   width: 100%;
 }
 
@@ -218,26 +213,29 @@ export default {
   border-left: 4px solid @brand;
 }
 
-.step-number {
+.step-number-wrap {
+  width: 52 * @size-factor;
+  height: 52 * @size-factor;
+  border-radius: 26 * @size-factor;
+  background-color: @brand;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 52 * @size-factor;
-  height: 52 * @size-factor;
-  background-color: @brand;
+  flex-shrink: 0;
+  margin-right: 20 * @size-factor;
+}
+
+.step-number {
   color: @white;
   font-size: 26px;
   font-weight: bold;
-  border-radius: 26 * @size-factor;
-  flex-shrink: 0;
-  margin-right: 20 * @size-factor;
+  text-align: center;
 }
 
 .step-text {
   flex: 1;
   font-size: 30px;
   color: @black;
-  line-height: 1.8;
   padding-top: 8 * @size-factor;
 }
 
@@ -270,7 +268,6 @@ export default {
   flex: 1;
   font-size: 28px;
   color: @black;
-  line-height: 1.7;
   padding-top: 4 * @size-factor;
 }
 </style>

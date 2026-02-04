@@ -34,6 +34,15 @@
       "pages/Home": {
         "component": "index"
       },
+      "pages/Tools": {
+        "component": "index"
+      },
+      "pages/Mine": {
+        "component": "index"
+      },
+      "pages/Feedback": {
+        "component": "index"
+      },
       "pages/Meditation": {
         "component": "index"
       },
@@ -70,6 +79,15 @@
     "pages": {
       "pages/Home": {
         "titleBarText": "轻瑜伽"
+      },
+      "pages/Tools": {
+        "titleBarText": "工具"
+      },
+      "pages/Mine": {
+        "titleBarText": "我的"
+      },
+      "pages/Feedback": {
+        "titleBarText": "投诉与建议"
       },
       "pages/Meditation": {
         "titleBarText": "计时冥想"

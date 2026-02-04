@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper">
+  <div class="page-wrap">
+    <div class="wrapper">
     <div class="time-selector">
       <text class="selector-title">选择冥想时长</text>
       <div class="time-buttons">
@@ -135,6 +136,12 @@ export default {
 
 <style lang="less">
 @import './../../assets/styles/style.less';
+
+.page-wrap {
+  flex-direction: column;
+  flex: 1;
+  background-color: @bg-main;
+}
 
 .wrapper {
   flex-direction: column;

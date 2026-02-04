@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper">
+  <div class="page-wrap">
+    <div class="wrapper">
     <div class="card-container">
       <div class="tap-area left-tap-area" onclick="goToPrevious">
         <text class="arrow-icon" if="{{currentIndex > 0}}">◀</text>
@@ -20,7 +21,9 @@
                 <text class="section-title">练习步骤</text>
                 <div class="steps-list">
                   <div class="step-item" for="{{(stepIndex, step) in currentPractice.steps}}">
-                    <text class="step-number">{{stepIndex + 1}}</text>
+                    <div class="step-number-wrap">
+                      <text class="step-number">{{stepIndex + 1}}</text>
+                    </div>
                     <text class="step-text">{{step}}</text>
                   </div>
                 </div>
@@ -44,7 +47,7 @@
       <div class="tap-area right-tap-area" onclick="goToNext">
         <text class="arrow-icon" if="{{currentIndex < practices.length - 1}}">▶</text>
       </div>
-    </div>
+      </div>
   </div>
 </template>
 
@@ -87,12 +90,19 @@ export default {
 <style lang="less">
 @import './../../assets/styles/style.less';
 
+.page-wrap {
+  flex-direction: column;
+  flex: 1;
+  background-color: @bg-main;
+}
+
 .wrapper {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   flex: 1;
   background-color: @bg-main;
+  min-height: 0;
 }
 
 .card-container {
@@ -204,7 +214,6 @@ export default {
 .practice-desc {
   font-size: 30px;
   color: @black;
-  line-height: 1.8;
   width: 100%;
   margin-bottom: 40 * @size-factor;
 }
@@ -233,7 +242,6 @@ export default {
 .section-content {
   font-size: 28px;
   color: @black;
-  line-height: 1.8;
   width: 100%;
 }
 
@@ -256,26 +264,29 @@ export default {
   border-left: 4px solid @brand;
 }
 
-.step-number {
+.step-number-wrap {
+  width: 48 * @size-factor;
+  height: 48 * @size-factor;
+  border-radius: 24 * @size-factor;
+  background-color: @brand;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 48 * @size-factor;
-  height: 48 * @size-factor;
-  background-color: @brand;
+  flex-shrink: 0;
+  margin-right: 16 * @size-factor;
+}
+
+.step-number {
   color: @white;
   font-size: 24px;
   font-weight: bold;
-  border-radius: 24 * @size-factor;
-  flex-shrink: 0;
-  margin-right: 16 * @size-factor;
+  text-align: center;
 }
 
 .step-text {
   flex: 1;
   font-size: 28px;
   color: @black;
-  line-height: 1.7;
   padding-top: 8 * @size-factor;
 }
 
@@ -308,7 +319,6 @@ export default {
   flex: 1;
   font-size: 26px;
   color: @black;
-  line-height: 1.6;
   padding-top: 4 * @size-factor;
 }
 

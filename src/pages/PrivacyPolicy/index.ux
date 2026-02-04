@@ -14,26 +14,41 @@
         <text class="tab-text">用户协议</text>
       </div>
     </div>
-    <scroll-view class="content-scroll">
+    <div class="content-wrap">
       <div class="content" if="{{currentTab === 0}}">
         <text class="title">隐私政策</text>
         <text class="update-date">更新日期：2023-5-1</text>
-        <text class="content-text">{{privacyContent}}</text>
+        <text class="content-text">{{ privacyContent }}</text>
       </div>
       <div class="content" if="{{currentTab === 1}}">
         <text class="title">软件许可服务协议</text>
-        <text class="content-text">{{agreementContent}}</text>
+        <text class="content-text">{{ agreementContent }}</text>
       </div>
-    </scroll-view>
+    </div>
   </div>
 </template>
 
 <script>
+
 export default {
   data: {
-    params:'',
+    // 公司/应用信息配置：修改此处即可同步到隐私政策与用户协议
+
+    COMPANY_CONFIG: {
+      appName: '轻瑜伽',
+      companyName: '厦门xixi科技有限公司',
+      companyShortName: '厦门xixi',
+      companyAddress: '厦门市思明区吕岭路A6',
+      companyPhone: '13399999731',
+      servicePhone: '400-555-9263',
+      effectiveDate: '2023年5月1日',
+      publishDate: '2023年5月1日'
+    },
+    params: '',
     currentTab: 0,
-    privacyContent: `"轻瑜伽"是由厦门闪企科技有限公司（以下简称"我们"或"我司"）为您提供的一款快应用产品（以下简称"本快应用"）。
+    privacyContent: '',
+    agreementContent: '',
+    privacyTemplate: `"__APP_NAME__"是由__COMPANY_NAME__（以下简称"我们"或"我司"）为您提供的一款快应用产品（以下简称"本快应用"）。
 基本业务功能是瑜伽练习指导，为用户提供计时冥想、瑜伽动作练习、瑜伽知识学习等功能。
 我们十分尊重您的个人信息和数据，并会尽全力保护您的个人信息和数据的安全可靠。
 我们致力于维持您对我们的信任，恪守以下原则，保护您的个人信息：权责一致原则、目的明确原则、选择同意原则、最少够用原则、确保安全原则、主体参与原则、公开透明原则等。同时，我们承诺，我们将按业界成熟的安全标准，采取相应的安全保护措施来保护您的个人信息。
@@ -90,7 +105,7 @@ export default {
 
 四、您的权利
 （一） 查询、更正、获取您个人信息副本
-您可以在"我的"页面，拨打客服电话400-666-9263进行查询、更正、获取您个人信息副本。
+您可以在"我的"页面，拨打客服电话__SERVICE_PHONE__进行查询、更正、获取您个人信息副本。
 
 （二） 撤回您授权同意的范围
 每个业务功能需要一些基本的个人信息才能够得以完成，具体请见本政策第一条。对于额外个人信息的收集和使用，您可以点击相应按钮以示同意，或要求更改您授权同意的范围。需要特别注意的是，当您在首次使用同意隐私政策和用户协议后，后续再次打开或者使用时，我们将不会进行二次询问。您可以在产品中"我的—"清除缓存""撤回您的授权。
@@ -121,42 +136,58 @@ export default {
 （二）本隐私政策更新后，我们会在本快应用，并在更新后的条款生效前以适当的方式提醒您更新的内容，以便您及时了解本隐私政策的最新版本。如您继续使用我们的服务，表示同意接受修订后的本政策的内容，但是如果更新的内容需要联系方式、地理位置等个人敏感信息，仍会再次以显著方式征求您的同意。
 
 八、如何联系我们
-轻瑜伽由厦门闪企科技有限公司提供，我们可能会不时更新我们的隐私协议。我们将通过在此页面上发布新的隐私协议来通知您任何更改。
+__APP_NAME__由__COMPANY_NAME__提供，我们可能会不时更新我们的隐私协议。我们将通过在此页面上发布新的隐私协议来通知您任何更改。
 建议您定期查看本隐私协议以了解任何变更。本隐私协议的更改在此页面上发布时生效。
 如果您对本隐私政策有任何疑问，请联系我们：
-公司名称：厦门闪企科技有限公司
-通过地址：厦门市思明区吕岭路1696号A6
-通过电话：13395038731
+公司名称：__COMPANY_NAME__
+通过地址：__COMPANY_ADDRESS__
+通过电话：__COMPANY_PHONE__
 
-生效日期：2023年5月1日
-发布日期：2023年5月1日`,
-    agreementContent: `欢迎您使用轻瑜伽软件及服务！
+生效日期：__EFFECTIVE_DATE__
+发布日期：__PUBLISH_DATE__`,
+    agreementTemplate: `欢迎您使用__APP_NAME__软件及服务！
 
-《轻瑜伽软件许可及服务协议》（以下简称"本协议"）是您与厦门闪企科技有限公司（以下简称"厦门闪企"）所订立的协议，并于您确认同意后生效。本协议自您确认接受之时起或自您使用轻瑜伽服务的行为发生之时起（以时间在先者为准）生效。 为使用轻瑜伽软件（以下简称"本软件"）及服务，请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款，以及开通或使用某项服务的单独协议，并选择接受或不接受。限制、免责条款可能以黑体加粗形式提示您注意。 除非您已阅读并接受本协议所有条款，否则您无权下载、安装或使用本软件及相关服务。您的下载、安装、使用、登录等行为即视为您已阅读并同意上述协议的内容并接受本协议的约束。 如果您未满18周岁，请在法定监护人的陪同下阅读本协议，并特别注意未成年人使用条款。
+《__APP_NAME__软件许可及服务协议》（以下简称"本协议"）是您与__COMPANY_NAME__（以下简称"__COMPANY_SHORT_NAME__"）所订立的协议，并于您确认同意后生效。本协议自您确认接受之时起或自您使用__APP_NAME__服务的行为发生之时起（以时间在先者为准）生效。 为使用__APP_NAME__软件（以下简称"本软件"）及服务，请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款，以及开通或使用某项服务的单独协议，并选择接受或不接受。限制、免责条款可能以黑体加粗形式提示您注意。 除非您已阅读并接受本协议所有条款，否则您无权下载、安装或使用本软件及相关服务。您的下载、安装、使用、登录等行为即视为您已阅读并同意上述协议的内容并接受本协议的约束。 如果您未满18周岁，请在法定监护人的陪同下阅读本协议，并特别注意未成年人使用条款。
 
 一、协议的范围
 1.1协议使用的主体范围
-本协议是您与厦门闪企之间关于您下载、安装、使用、复制本软件，以及使用厦门闪企相关服务所订立的协议。
+本协议是您与__COMPANY_SHORT_NAME__之间关于您下载、安装、使用、复制本软件，以及使用__COMPANY_SHORT_NAME__相关服务所订立的协议。
 
 1.2本许可协议指向内容
-本协议项下的许可内容是指厦门闪企向用户提供的"轻瑜伽"软件许可及服务（以下简称"本服务"）。本协议内容同时包括厦门闪企可能不断发布的关于本服务的相关协议、业务规则等内容。上述内容一经正式发布，即为本协议不可分割的组成部分，您同样应当遵守。
+本协议项下的许可内容是指__COMPANY_SHORT_NAME__向用户提供的"__APP_NAME__"软件许可及服务（以下简称"本服务"）。本协议内容同时包括__COMPANY_SHORT_NAME__可能不断发布的关于本服务的相关协议、业务规则等内容。上述内容一经正式发布，即为本协议不可分割的组成部分，您同样应当遵守。
 
 二、关于本服务
 2.1本服务的内容
-本服务的内容是指厦门闪企向用户提供的具有不限于网络上的网页浏览、文字、媒体等内容，以及结合计时冥想、瑜伽动作练习、瑜伽知识学习等多种功能的软件及许可及服务（以下简称"本服务"）。除非另有明确规定，基于增强或强化目前服务目的所新增的任何新功能、服务、新产品，均无条件地适用本服务条款。
+本服务的内容是指__COMPANY_SHORT_NAME__向用户提供的具有不限于网络上的网页浏览、文字、媒体等内容，以及结合计时冥想、瑜伽动作练习、瑜伽知识学习等多种功能的软件及许可及服务（以下简称"本服务"）。除非另有明确规定，基于增强或强化目前服务目的所新增的任何新功能、服务、新产品，均无条件地适用本服务条款。
 
 2.2本服务的形式
-您使用本服务需下载厦门闪企"轻瑜伽"客户端软件，对于这些软件，厦门闪企给予您一项个人的、不可转让及非排他性的许可。
+您使用本服务需下载__COMPANY_SHORT_NAME__"__APP_NAME__"客户端软件，对于这些软件，__COMPANY_SHORT_NAME__给予您一项个人的、不可转让及非排他性的许可。
 
 2.3 本服务许可的范围
-2.3.1 厦门闪企给予您一项个人的、不可转让及非排他性的许可，以使用本软件。您可以为非商业目的在单一台终端设备上安装、使用、显示、运行本软件。 您不得为商业运营目的安装、使用、运行本软件，不可以对本软件或者本软件运行过程中释放到任何终端内存中的数据及本软件运行过程中客户端与服务器端的交互数据进行复制、更改、修改、挂接。
+2.3.1 __COMPANY_SHORT_NAME__给予您一项个人的、不可转让及非排他性的许可，以使用本软件。您可以为非商业目的在单一台终端设备上安装、使用、显示、运行本软件。 您不得为商业运营目的安装、使用、运行本软件，不可以对本软件或者本软件运行过程中释放到任何终端内存中的数据及本软件运行过程中客户端与服务器端的交互数据进行复制、更改、修改、挂接。
 
-生效日期：2023年5月1日
-发布日期：2023年5月1日`
+生效日期：__EFFECTIVE_DATE__
+发布日期：__PUBLISH_DATE__`
+  },
+  fillPlaceholders(str) {
+    console.log('fillPlaceholders str',str)
+    if (!str) return ''
+    return str
+      .replace(/__APP_NAME__/g, this.COMPANY_CONFIG.appName)
+      .replace(/__COMPANY_NAME__/g, this.COMPANY_CONFIG.companyName)
+      .replace(/__COMPANY_SHORT_NAME__/g, this.COMPANY_CONFIG.companyShortName)
+      .replace(/__COMPANY_ADDRESS__/g, this.COMPANY_CONFIG.companyAddress)
+      .replace(/__COMPANY_PHONE__/g, this.COMPANY_CONFIG.companyPhone)
+      .replace(/__SERVICE_PHONE__/g, this.COMPANY_CONFIG.servicePhone)
+      .replace(/__EFFECTIVE_DATE__/g, this.COMPANY_CONFIG.effectiveDate)
+      .replace(/__PUBLISH_DATE__/g, this.COMPANY_CONFIG.publishDate)
   },
   onInit() {
+    this.privacyContent = this.fillPlaceholders(this.privacyTemplate)
+    this.agreementContent = this.fillPlaceholders(this.agreementTemplate)
+    // 读取路由参数，判断默认展示的 tab
+    this.params = this.$page && this.$page.params ? this.$page.params : {}
     this.$page.setTitleBar({ text: '隐私政策' })
-    // 检查是否有传入的 tab 参数
     if (this.params.tab === 'agreement') {
       this.currentTab = 1
       this.$page.setTitleBar({ text: '用户协议' })
@@ -176,12 +207,20 @@ export default {
 <style lang="less">
 @import './../../assets/styles/style.less';
 
+/* 使用页面级滚动 */
 .wrapper {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  flex: 1;
+  width: 100%;
+  min-height: 100%;
   background-color: @bg-main;
+  padding-bottom: 40 * @size-factor;
+}
+
+.content-wrap {
+  width: 100%;
+  flex-direction: column;
 }
 
 .tab-box {
@@ -218,11 +257,6 @@ export default {
   color: @white;
 }
 
-.content-scroll {
-  width: 100%;
-  flex: 1;
-}
-
 .content {
   flex-direction: column;
   justify-content: flex-start;
@@ -255,7 +289,6 @@ export default {
 .content-text {
   font-size: 28px;
   color: @black;
-  line-height: 1.8;
   width: 100%;
 }
 </style>

@@ -1,0 +1,148 @@
+<template>
+  <div class="wrapper">
+    <div class="content-main">
+      <div class="tip-card">
+        <text class="tip-title">投诉与建议</text>
+        <text class="tip-text">如有问题或建议，欢迎向我们反馈</text>
+      </div>
+      <div class="form-section">
+        <text class="label">请输入您的反馈内容</text>
+        <textarea
+          class="textarea"
+          placeholder="请详细描述您遇到的问题或建议..."
+          maxlength="500"
+          value="{{feedbackText}}"
+          onchange="onTextChange"
+        ></textarea>
+        <text class="char-count">{{feedbackText.length}}/500</text>
+      </div>
+      <input
+        class="submit-btn"
+        type="button"
+        value="提交反馈"
+        onclick="submitFeedback"
+        disabled="{{feedbackText.length === 0}}"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  private: {
+    feedbackText: ''
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: '投诉与建议' })
+  },
+  onTextChange(e) {
+    this.feedbackText = e.text || ''
+  },
+  submitFeedback() {
+    if (!this.feedbackText || this.feedbackText.trim().length === 0) {
+      $utils.showToast('请输入反馈内容')
+      return
+    }
+    $utils.showToast('感谢您的反馈，我们会认真对待！')
+    setTimeout(() => {
+      router.back()
+    }, 1000)
+  }
+}
+</script>
+
+<style lang="less">
+@import './../../assets/styles/style.less';
+
+.wrapper {
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  width: 100%;
+  background-color: @bg-main;
+}
+
+.content-main {
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 24 * @size-factor 20 * @size-factor;
+}
+
+.tip-card {
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 24 * @size-factor;
+  margin-bottom: 24 * @size-factor;
+  border-left-width: 4 * @size-factor;
+  border-left-color: @brand;
+}
+
+.tip-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: @black;
+  margin-bottom: 8 * @size-factor;
+}
+
+.tip-text {
+  font-size: 26px;
+  color: @grey;
+  text-align: center;
+}
+
+.form-section {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin-bottom: 24 * @size-factor;
+}
+
+.label {
+  font-size: 28px;
+  color: @black;
+  margin-bottom: 12 * @size-factor;
+  padding-left: 4 * @size-factor;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 400 * @size-factor;
+  background-color: @white;
+  border-radius: 16 * @size-factor;
+  padding: 20 * @size-factor;
+  font-size: 28px;
+  color: @black;
+  border: 1px solid @border-color;
+  placeholder-color: @grey;
+}
+
+.char-count {
+  font-size: 24px;
+  color: @grey;
+  text-align: right;
+  margin-top: 8 * @size-factor;
+  padding-right: 4 * @size-factor;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88 * @size-factor;
+  border-radius: 44 * @size-factor;
+  font-size: 32px;
+  background-color: @brand;
+  color: @white;
+  border: none;
+}
+
+.submit-btn:disabled {
+  background-color: @border-color;
+  color: @grey;
+}
+</style>
