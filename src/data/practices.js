@@ -7,6 +7,7 @@ export default [
     name: '山式',
     image: '/assets/images/practices/mountain.png',
     difficulty: '初级',
+    difficulty_val:'basic',
     description:
       '山式是瑜伽中最基础的站立姿势，是所有站立体式的根基。它能够帮助改善体态，增强身体平衡感和稳定性。',
     steps: [
@@ -28,6 +29,7 @@ export default [
     name: '树式',
     image: '/assets/images/practices/tree.png',
     difficulty: '初级',
+    difficulty_val:'basic',
     description:
       '树式是一个经典的平衡体式，能够增强腿部力量，提高专注力和平衡能力。',
     steps: [
@@ -49,6 +51,7 @@ export default [
     name: '战士一式',
     image: '/assets/images/practices/warrior1.png',
     difficulty: '中级',
+    difficulty_val:'intermediate',
     description:
       '战士一式能够增强腿部力量，打开髋部，拉伸大腿前侧和腹股沟，同时增强核心稳定性。',
     steps: [
@@ -71,6 +74,7 @@ export default [
     name: '下犬式',
     image: '/assets/images/practices/downward-dog.png',
     difficulty: '中级',
+    difficulty_val:'intermediate',
     description:
       '下犬式是瑜伽中最常见的体式之一，能够拉伸整个身体后侧，增强手臂和腿部力量，同时具有放松和恢复的作用。',
     steps: [
@@ -92,6 +96,7 @@ export default [
     name: '猫牛式',
     image: '/assets/images/practices/cat-cow.png',
     difficulty: '初级',
+    difficulty_val:'basic',
     description:
       '猫牛式是一个温和的脊柱活动体式，能够改善脊柱灵活性，缓解背部紧张，适合作为热身或放松练习。',
     steps: [
@@ -112,6 +117,7 @@ export default [
     name: '儿童式',
     image: '/assets/images/practices/child.png',
     difficulty: '初级',
+    difficulty_val:'basic',
     description:
       '儿童式是一个放松和恢复的体式，能够拉伸背部、髋部和肩膀，同时具有镇静和减压的作用。',
     steps: [

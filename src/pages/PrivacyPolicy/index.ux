@@ -35,14 +35,14 @@ export default {
     // 公司/应用信息配置：修改此处即可同步到隐私政策与用户协议
 
     COMPANY_CONFIG: {
-      appName: '轻瑜伽',
-      companyName: '厦门xixi科技有限公司',
-      companyShortName: '厦门xixi',
-      companyAddress: '厦门市思明区吕岭路A6',
-      companyPhone: '13399999731',
+    appName: '芯瑜伽',
+      companyName: '湖北省芊时瑄网络科技有限公司',
+      companyShortName: '湖北芊时瑄',
+      companyAddress: '湖北省武汉市汉南区东荆街太白路西侧汉南新城（欧洲风情小镇一期三区B1）1-2栋4单元3层3室（商务秘书ZG-0192）',
+      companyPhone: '15223246524',
       servicePhone: '400-555-9263',
-      effectiveDate: '2023年5月1日',
-      publishDate: '2023年5月1日'
+      effectiveDate: '2025年5月1日',
+      publishDate: '2025年5月1日'
     },
     params: '',
     currentTab: 0,

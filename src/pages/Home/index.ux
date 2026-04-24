@@ -6,10 +6,14 @@
       <div class="section status-card">
         <text class="section-label">今日状态</text>
         <div class="status-inner">
-          <image class="status-image" if="{{statusImage}}" src="{{statusImage}}" />
+          <image
+            class="status-image"
+            if="{{statusImage}}"
+            src="{{statusImage}}"
+          />
           <div class="status-text-wrap">
-            <text class="status-title">{{statusTitle}}</text>
-            <text class="status-desc">{{statusDesc}}</text>
+            <text class="status-title">{{ statusTitle }}</text>
+            <text class="status-desc">{{ statusDesc }}</text>
           </div>
         </div>
       </div>
@@ -17,8 +21,8 @@
       <div class="section suggest-card">
         <text class="section-label">今日建议</text>
         <div class="suggest-inner">
-          <text class="suggest-dir">{{todaySuggestion}}</text>
-          <text class="suggest-hint">{{todayHint}}</text>
+          <text class="suggest-dir">{{ todaySuggestion }}</text>
+          <text class="suggest-hint">{{ todayHint }}</text>
         </div>
       </div>
       <!-- 快捷工具入口 -->
@@ -42,7 +46,9 @@
       </div>
       <!-- 底部说明 -->
       <div class="footer-note">
-        <text class="footer-note-text">轻瑜伽 · 专注工具，助你每日一点练习</text>
+        <text class="footer-note-text"
+          >芯瑜伽 · 专注工具，助你每日一点练习</text
+        >
       </div>
     </div>
     <!-- 底部 TabBar -->
@@ -52,15 +58,27 @@
       <div class="privacy-popup-box">
         <text class="privacy-popup-title">温馨提示</text>
         <text class="privacy-popup-content">
-          <span>欢迎使用本应用！本应用非常重视您的隐私和个人信息保护。在您使用本应用前，请认真阅读</span>
-          <text class="privacy-link" onclick="goToPrivacyPolicy('agreement')">《用户协议》</text>
-          <span>及</span>
-          <text class="privacy-link" onclick="goToPrivacyPolicy('privacy')">《隐私政策》</text>
-          <span>您同意并接受全部条款后方可开始使用本应用。</span>
+          欢迎使用本应用！本应用非常重视您的隐私和个人信息保护。在您使用本应用前，请认真阅读</text
+            >
+           <div>
+              <text class="privacy-link" onclick="goToPrivacyPolicy('agreement')"
+              >《用户协议》</text
+            >
+            <text class="privacy-link" onclick="goToPrivacyPolicy('privacy')"
+              >《隐私政策》</text
+            >
+           </div>
+            <text >
+          您同意并接受全部条款后方可开始使用本应用。</text
+            >
         </text>
         <div class="privacy-popup-btn-box">
-          <text class="privacy-popup-btn-disagree" onclick="disagree">不同意</text>
-          <text class="privacy-popup-btn-agree" onclick="agree">同意并继续</text>
+          <text class="privacy-popup-btn-disagree" onclick="disagree"
+            >不同意</text
+          >
+          <text class="privacy-popup-btn-agree" onclick="agree"
+            >同意并继续</text
+          >
         </div>
       </div>
     </div>
@@ -70,6 +88,7 @@
 <script>
 import router from '@system.router'
 import storage from '@system.storage'
+import webview from '@system.webview'
 
 const SUGGESTIONS = [
   { dir: '呼吸与放松', hint: '适合做 5～10 分钟呼吸练习或短时冥想。' },
@@ -91,7 +110,7 @@ export default {
     todayHint: ''
   },
   onInit() {
-    this.$page.setTitleBar({ text: '轻瑜伽' })
+    this.$page.setTitleBar({ text: '芯瑜伽' })
     this.setTodayStatus()
     this.setTodaySuggestion()
   },
@@ -99,7 +118,7 @@ export default {
     const that = this
     storage.get({
       key: 'isAgreePrivacyPolicy',
-      success: function(data) {
+      success: function (data) {
         if (data === 'true') {
           that.isShowPrivacyPopup = false
         } else {
@@ -108,7 +127,7 @@ export default {
           }, 500)
         }
       },
-      fail: function() {
+      fail: function () {
         setTimeout(() => {
           that.isShowPrivacyPopup = true
         }, 500)
@@ -147,10 +166,20 @@ export default {
     router.push({ uri: 'pages/KnowledgeList' })
   },
   goToPrivacyPolicy(type) {
-    router.push({
-      uri: 'pages/PrivacyPolicy',
-      params: { tab: type === 'agreement' ? 'agreement' : 'privacy' }
-    })
+    if (type === 'agreement') {
+      webview.loadUrl({
+        url: 'http://www.kyy887788.com/licensing.html',
+      })
+    } else {
+      webview.loadUrl({
+        url: 'http://www.kyy887788.com/privacy.html',
+      })
+    }
+
+    // router.push({
+    //   uri: 'pages/PrivacyPolicy',
+    //   params: { tab: type === 'agreement' ? 'agreement' : 'privacy' }
+    // })
   },
   disagree() {
     this.$app.exit()
@@ -160,8 +189,8 @@ export default {
     storage.set({
       key: 'isAgreePrivacyPolicy',
       value: 'true',
-      success: function() {},
-      fail: function() {}
+      success: function () { },
+      fail: function () { }
     })
     this.isShowPrivacyPopup = false
   }
@@ -222,7 +251,7 @@ export default {
   height: 520 * @size-factor;
   object-fit: contain;
   object-position: center;
-  background-color: #FDF5EF;
+  background-color: #fdf5ef;
 }
 
 .status-text-wrap {
@@ -251,7 +280,7 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  background-color: #FDF5EF;
+  background-color: #fdf5ef;
   border-radius: 16 * @size-factor;
   padding: 24 * @size-factor;
   border: 1px solid @border-color;
@@ -348,20 +377,21 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  padding-top: 200px;
 }
 
 .privacy-popup-box {
   width: 600px;
   min-height: 400px;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   background-color: @white;
   border-radius: 20 * @size-factor;
   padding: 40 * @size-factor;

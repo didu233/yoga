@@ -12,7 +12,7 @@
             <div class="practice-info">
               <div class="practice-header">
                 <text class="practice-name">{{currentPractice.name}}</text>
-                <text class="practice-difficulty difficulty-{{currentPractice.difficulty}}"
+                <text class="practice-difficulty difficulty-{{currentPractice.difficulty_val}}"
                   >{{currentPractice.difficulty}}</text
                 >
               </div>
@@ -155,7 +155,7 @@ export default {
   width: 100%;
   flex: 1;
   padding: 40 * @size-factor;
-  overflow: scroll;
+  overflow: visible;
 }
 
 .practice-image {
@@ -196,17 +196,17 @@ export default {
   margin-left: 20 * @size-factor;
 }
 
-.difficulty-初级 {
+.difficulty-basic {
   background-color: #e8f5e9;
   color: #2e7d32;
 }
 
-.difficulty-中级 {
+.difficulty-intermediate {
   background-color: #fff3e0;
   color: #e65100;
 }
 
-.difficulty-高级 {
+.difficulty-advanced {
   background-color: #fce4ec;
   color: #c2185b;
 }
